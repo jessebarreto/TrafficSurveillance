@@ -30,6 +30,9 @@ public:
 
     // When Line is Complete
     bool isCompleted();
+
+    // Draw itself in a colorful image
+    void draw(cv::Mat &image);
 };
 
 #endif // IMAGELINE_H

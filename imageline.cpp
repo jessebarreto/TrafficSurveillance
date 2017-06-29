@@ -59,3 +59,10 @@ bool ImageLine::isCompleted()
     return (_points.first != nullptr && _points.second != nullptr);
 }
 
+void ImageLine::draw(cv::Mat &image)
+{
+    if (isCompleted()) {
+        cv::line(image, *_points.first, *_points.second, CV_RGB(0, 255, 0));
+    }
+}
+
