@@ -55,9 +55,22 @@ void BGMOGDetector::process(const cv::Mat &frame, cv::Mat &result)
         }
 
         // Obtain foreground
-        _ptrSubtractor->operator ()(frame, _fgMask);
+        _ptrSubtractor->operator ()(frame, _fgMask, _learningRate);
         if (_showFGMask) {
             cv::imshow(_fgMaskWinName, _fgMask);
+        }
+
+        // Apply Threshold
+        cv::Mat binarizedFGMask;
+        cv::threshold(_fgMask, binarizedFGMask, _thresholdValue, 255, cv::THRESH_BINARY);
+        if (_showBinarizedFGMask) {
+            cv::imshow(_binarizedFGMaskWinName, binarizedFGMask);
+        }
+
+        // Apply Morph filter
+        _morphFilter(binarizedFGMask, result, cv::MORPH_CLOSE, _morphboxSize);
+        if (_showMorphFGMask) {
+            cv::imshow(_morphFGMaskWinName, result);
         }
     }
 }
@@ -92,7 +105,7 @@ void BGMOGDetector::_morphFilter(const cv::Mat &src, cv::Mat &dst, int operation
         cv::morphologyEx(closing, opening, cv::MORPH_OPEN, kernel);
 
         // Merge adjacent big blobs
-        cv::dilate(opening, dst, kernel, cv::Point(-1,-1), 2);
+        cv::dilate(opening, dst, kernel, cv::Point(-1,-1), 3);
     }
 }
 

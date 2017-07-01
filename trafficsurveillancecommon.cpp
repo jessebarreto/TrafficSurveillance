@@ -1,6 +1,7 @@
 #include "trafficsurveillancecommon.h"
 
 #include <tuple>
+#include <math.h>
 
 
 void setWindow(const std::string &winName)
@@ -91,16 +92,16 @@ void runVideo(cv::VideoCapture &video, cv::Mat &frame, ImageLine &imageLine, std
         indetificator->process(frame, identRes);
 
         // Track Cars in the Scene
-//        tracker->process();
+        tracker->process(frame, identRes, imageLine, cars);
 
         // Ends Timer
         auto end = std::chrono::high_resolution_clock::now();
         auto dt = 1.e-6 * std::chrono::duration_cast<std::chrono::nanoseconds>(end-start).count();
 
         // Draw Cars
-//        for (Car &car : cars) {
-
-//        }
+        for (Car &car : cars) {
+            car.drawCar(frame);
+        }
 
         if (hasTimer) {
             printDebug(std::string("Processing took ") + std::to_string(dt) + std::string(" ms"), DEBUGINFO);
@@ -108,5 +109,33 @@ void runVideo(cv::VideoCapture &video, cv::Mat &frame, ImageLine &imageLine, std
 
         imageLine.draw(frame);
         cv::imshow(mainWindow, frame);
+    }
+}
+
+void getVectorPolarCoord(const cv::Point &src, const cv::Point &dst, double *magnitude, double *angle)
+{
+    double dx = dst.x - src.x;
+    double dy = dst.y - src.y;
+
+    *magnitude = std::sqrt(dx*dx + dy*dy);
+
+    if (dy > 0) {
+        *angle = std::atan2(-dx, dy);
+    } else if (dy == 0) {
+        if (dx < 0) {
+            *angle = M_PI_2;
+        } else if (dx > 0) {
+            *angle = -1.0 * M_PI_2;
+        } else {
+            *angle = 0.0;
+        }
+    } else {
+        if (dx < 0) {
+            *angle = M_PI - std::atan2(dx, dy);
+        } else if (dx > 0) {
+            *angle = -1.0 * M_PI - std::atan2(dx, dy);
+        } else {
+            *angle = M_PI;
+        }
     }
 }

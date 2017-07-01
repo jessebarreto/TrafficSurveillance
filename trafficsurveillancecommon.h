@@ -25,25 +25,6 @@
 static const std::string mainWindow("Video Window");
 
 /*!
- * \brief Método do Projeto 7 Requisito 1
- * Use Optical Flow HS together with Morphologic Transform (Opening) to Identify Cars
- * Parameters - (HS - alpha, Morph - size)
- */
-void methodProject7Req1(cv::VideoCapture &video, const cv::Mat &curFrame, double alpha, int morphSize);
-
-/*!
- * \brief Método do Projeto 7 Requisito 2
- * Use Background Subtraction to Identify Cars
- * Parameters - (int algorithm type - 0(default) - MOG2, 1 - MOG, 2 - )
- */
-void methodProject7Req2(cv::VideoCapture &video, const cv::Mat &curFrame, int type);
-
-/*!
- * \brief Método Proposto
- */
-void mainMethod(cv::VideoCapture &video, const cv::Mat &curFrame);
-
-/*!
  * \brief Run application setup
  */
 int runSetup(cv::VideoCapture &video, ImageLine &line, int captureAreaSize);
@@ -63,5 +44,10 @@ void setWindow(const std::string &winName);
  * \brief drawLineHandler callback function
  */
 void drawLineHandler(int event, int x, int y, int flags, void* ptrLine);
+
+/*!
+ * \brief Calculates a vector from 2 points in polar coordinates
+ */
+void getVectorPolarCoord(const cv::Point &src, const cv::Point &dst, double *magnitude, double *angle);
 
 #endif // TRAFFICSURVEILLANCECOMMON_H
