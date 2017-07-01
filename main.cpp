@@ -26,16 +26,19 @@
 #include "trafficsurveillancecommon.h"
 
 #include "motionsegmentationdetectorhs.h"
+#include "bgmogdetector.h"
+#include "bgmog2detector.h"
 
 // Video Configuration
-#define USE_VIDEO 1
+#define USE_VIDEO 2
 #define DEFAULT_VIDEO_NUMBER 0
 #define DEFAULT_DATASET_NUMBER 0
-#define LOOP_VIDEO false
+#define LOOP_VIDEO true
 #define VIDEO_SPEED 100 // ms
-#define VIDEO_PROC_TIMER true
+#define VIDEO_PROC_TIMER false
 
-#define IDENTIFICATION_USED 0
+#define DETECTOR_USED 1
+#define MORPH_SIZE 4
 
 int main(int argc, char **argv)
 {
@@ -53,10 +56,16 @@ int main(int argc, char **argv)
         return ret;
     }
 
-    switch (IDENTIFICATION_USED) {
+    switch (DETECTOR_USED) {
+    case 2:
+        detector = new BGMOG2Detector(5, 5.0, true, 0.01, 250, MORPH_SIZE);
+        break;
+    case 1:
+        detector = new BGMOGDetector(0.05, 250, MORPH_SIZE);
+        break;
     case 0:
     default:
-        detector = new MotionSegmentationDetectorHS(1.0, 15);
+        detector = new MotionSegmentationDetectorHS(1.0, MORPH_SIZE);
         break;
     }
 

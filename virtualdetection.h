@@ -12,6 +12,9 @@ class VirtualDetection
 public:
     // Process Identification Method
     virtual void process(const cv::Mat &frame, cv::Mat &result) = 0;
+
+    // Initialization
+    virtual void init() = 0;
 };
 
 #endif // VIRTUALDETECTION_H

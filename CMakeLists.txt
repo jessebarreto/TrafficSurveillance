@@ -39,6 +39,8 @@ add_executable(	TrafficSurveillance #Executable Binary
                 trafficimagedataset.cpp
                 flowdrawer.cpp
                 motionsegmentationdetectorhs.cpp
+                bgmog2detector.cpp
+                bgmogdetector.cpp
                 virtualdetection.h #Includes
                 virtualtrack.h
                 )

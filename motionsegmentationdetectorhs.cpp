@@ -1,6 +1,7 @@
 #include "motionsegmentationdetectorhs.h"
 
 #include "trafficsurveillancecommon.h"
+#include "trafficdebug.h"
 
 #include <opencv2/legacy/legacy.hpp>
 
@@ -8,8 +9,18 @@ MotionSegmentationDetectorHS::MotionSegmentationDetectorHS(double alpha, int mor
     _alpha(alpha),
     _morphBoxSize(morphBoxSize),
     _startFlag(true),
-    _showFlowFrameFlag(true)
+    _showFlowFrameFlag(false),
+    _showMagFlowFlag(false),
+    _showBinaryMagFlowFlag(false),
+    _showMorphFlag(true),
+    _flowWinName("Optical Flow"),
+    _filteredFlowWinName("Filtered Flow"),
+    _magFlowWinName("Flow Magniude"),
+    _binaryMagFlowWinName("Binarized Flow Magnitude"),
+    _morphWinName("Morphed Filtered Flow")
 {
+    _alphaChangeable = static_cast<int>(100 * _alpha);
+    _maxAlpha = 7500;
 }
 
 void MotionSegmentationDetectorHS::process(const cv::Mat &frame, cv::Mat &result)
@@ -20,8 +31,24 @@ void MotionSegmentationDetectorHS::process(const cv::Mat &frame, cv::Mat &result
         cv::cvtColor(_prevFrame, _prevFrame, CV_BGR2GRAY);
 
         if (_showFlowFrameFlag) {
-            _flowWinName = "Optical Flow";
             setWindow(_flowWinName);
+            setWindow(_filteredFlowWinName);
+        }
+
+        if (_showMagFlowFlag) {
+            setWindow(_magFlowWinName);
+        }
+
+        if (_showBinaryMagFlowFlag) {
+            setWindow(_binaryMagFlowWinName);
+        }
+
+        if (_showMorphFlag) {
+            setWindow(_morphWinName);
+            cv::createTrackbar("HS Alpha (/100)", _morphWinName, &_alphaChangeable, _maxAlpha,
+                               _filterParamAlphaSettingHandler, static_cast<void *>(&_alpha));
+            cv::createTrackbar("Morph Size", _morphWinName, &_morphBoxSize, 100,
+                               _filterParamMorphSettingHandler, static_cast<void *>(&_morphBoxSize));
         }
 
         _startFlag = false;
@@ -35,18 +62,43 @@ void MotionSegmentationDetectorHS::process(const cv::Mat &frame, cv::Mat &result
 
         // Filter Optical Flow
         cv::Mat filteredFlow;
-        _filterFlow(flow, filteredFlow);
-
+        _filterFlow(flow, filteredFlow, false);
         if (_showFlowFrameFlag) {
-            _drawOpticalFlowImage(_flowImage, filteredFlow, frame, 10);
+            _drawOpticalFlowImage(_flowImage, flow, frame, 10);
+            _drawOpticalFlowImage(_filteredFlowImage, filteredFlow, frame, 10, CV_RGB(0, 0, 255));
             cv::imshow(_flowWinName, _flowImage);
+            cv::imshow(_filteredFlowWinName, _filteredFlowImage);
         }
 
+        // Normalize Magnitude
+        cv::Mat filteredFlowX, filteredFlowY, flowMag, flowMag8b;
+        _splitFlows(filteredFlow, filteredFlowX, filteredFlowY);
+        cv::magnitude(filteredFlowX, filteredFlowY, flowMag);
+        cv::normalize(flowMag, flowMag8b, 0, 255, cv::NORM_MINMAX, CV_8U);
+        if (_showMagFlowFlag) {
+            cv::imshow(_magFlowWinName, flowMag8b);
+        }
 
+        // Binarize Mag Flow
+        cv::Mat binaryFlow;
+        cv::threshold(flowMag8b, binaryFlow, 0, 255, cv::THRESH_BINARY + cv::THRESH_OTSU);
+        if (_showBinaryMagFlowFlag) {
+            cv::imshow(_binaryMagFlowWinName, binaryFlow);
+        }
+
+        // Morphological Filter
+        _morphFilter(binaryFlow, result, cv::MORPH_OPEN, _morphBoxSize);
+        if (_morphBoxSize) {
+            cv::imshow(_morphWinName, result);
+        }
 
         // Update
         _prevFrame = currFrame.clone();
     }
+}
+
+void MotionSegmentationDetectorHS::init()
+{
 }
 
 void MotionSegmentationDetectorHS::_calculateFlowHS(const cv::Mat &current, const cv::Mat &previous, cv::Mat &flow,
@@ -67,19 +119,31 @@ void MotionSegmentationDetectorHS::_calculateFlowHS(const cv::Mat &current, cons
 
 }
 
-void MotionSegmentationDetectorHS::_filterFlow(const cv::Mat &flows, cv::Mat &filteredFlows)
+void MotionSegmentationDetectorHS::_filterFlow(const cv::Mat &flows, cv::Mat &filteredFlows, bool adaptative = true)
 {
     cv::Mat flowX, flowY;
     _splitFlows(flows, flowX, flowY);
 
-    flowX.convertTo(flowX, CV_8UC1);
-    flowY.convertTo(flowY, CV_8UC1);
-    cv::fastNlMeansDenoising(flowX, flowX);
-    cv::fastNlMeansDenoising(flowY, flowY);
+    cv::Mat filtFlowX, filtFlowY;
+    if (adaptative) {
+        cv::Mat filtFlowXu, filtFlowYu;
+        cv::Mat flowXu, flowYu;
+        double minX, minY, maxX, maxY;
+        cv::minMaxIdx(flowX, &minX, &maxX);
+        cv::minMaxIdx(flowX, &minY, &maxY);
+        flowX.convertTo(flowXu, CV_8UC1, 255.0 / (maxX - minX));
+        flowY.convertTo(flowYu, CV_8UC1, 255.0 / (maxY - minY));
+        cv::adaptiveBilateralFilter(flowXu, filtFlowXu, cv::Size(11, 11), 50);
+        cv::adaptiveBilateralFilter(flowYu, filtFlowYu, cv::Size(11, 11), 50);
 
-    flowX.convertTo(flowX, CV_32FC1);
-    flowY.convertTo(flowY, CV_32FC1);
-    _mergeFlows(flowX, flowY, filteredFlows);
+        filtFlowXu.convertTo(filtFlowX, CV_32FC1, (maxX - minX) / 255.0);
+        filtFlowYu.convertTo(filtFlowY, CV_32FC1, (maxX - minX) / 255.0);
+    } else {
+        int __bDist__ = 10;
+        cv::bilateralFilter(flowX, filtFlowX, __bDist__, 2 * __bDist__, __bDist__ / 2);
+        cv::bilateralFilter(flowY, filtFlowY, __bDist__, 2 * __bDist__, __bDist__ / 2);
+    }
+    _mergeFlows(filtFlowX, filtFlowY, filteredFlows);
 }
 
 void MotionSegmentationDetectorHS::_mergeFlows(const cv::Mat &flowX, const cv::Mat &flowY, cv::Mat &flowXY)
@@ -97,5 +161,48 @@ void MotionSegmentationDetectorHS::_splitFlows(const cv::Mat &flowXY, cv::Mat &f
     std::vector<cv::Mat> flows;
     cv::split(flowXY, flows);
     flowX = flows.at(0);
-    flowX = flows.at(1);
+    flowY = flows.at(1);
+}
+
+void MotionSegmentationDetectorHS::_morphFilter(const cv::Mat &src, cv::Mat &dst, int operation, int structElementSize)
+{
+    cv::Mat kernel = cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(structElementSize, structElementSize));
+
+    if (operation == cv::MORPH_OPEN) {
+        // Remove Small Blobs
+        cv::Mat opening;
+        cv::morphologyEx(src, opening, cv::MORPH_OPEN, kernel);
+
+        // Fill holes
+        cv::Mat closing;
+        cv::morphologyEx(opening, closing, cv::MORPH_CLOSE, kernel);
+
+        // Merge adjacent big blobs
+        cv::dilate(closing, dst, kernel, cv::Point(-1,-1), 2);
+    } else {
+        // Fill holes
+        cv::Mat closing;
+        cv::morphologyEx(src, closing, cv::MORPH_CLOSE, kernel);
+
+        // Remove Small Blobs
+        cv::Mat opening;
+        cv::morphologyEx(closing, opening, cv::MORPH_OPEN, kernel);
+
+        // Merge adjacent big blobs
+        cv::dilate(opening, dst, kernel, cv::Point(-1,-1), 2);
+    }
+}
+
+void MotionSegmentationDetectorHS::_filterParamMorphSettingHandler(int value, void *data)
+{
+    int *morph = static_cast<int *>(data);
+
+    *morph = *morph < 1 ? 1 : *morph;
+}
+
+void MotionSegmentationDetectorHS::_filterParamAlphaSettingHandler(int value, void *data)
+{
+    double *alpha = static_cast<double *>(data);
+    *alpha = value / 100.0;
+    *alpha = *alpha < 0.1 ? 0.1 : *alpha;
 }
