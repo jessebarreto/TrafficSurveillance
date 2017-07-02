@@ -17,7 +17,7 @@ public:
      * \brief Track cars in the scene
      */
     virtual int process(const cv::Mat &frame, const cv::Mat &srcBlobs, ImageLine &imageLine,
-                         std::vector<Car> &cars) = 0;
+                         std::vector<Car *> &cars) = 0;
 };
 
 #endif // VIRTUALTRACK_H

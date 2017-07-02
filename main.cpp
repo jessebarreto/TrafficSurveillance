@@ -34,21 +34,22 @@
 
 // Video Configuration
 #define USE_VIDEO 1
-#define DEFAULT_VIDEO_NUMBER 0
-#define DEFAULT_DATASET_NUMBER 0
+#define DEFAULT_VIDEO_NUMBER 1
+#define DEFAULT_DATASET_NUMBER 5
 #define LOOP_VIDEO false
 #define VIDEO_SPEED 300 // ms
 #define VIDEO_PROC_TIMER false
 
-#define DETECTOR_USED 1
+#define DETECTOR_USED 2
 #define MORPH_SIZE 4
-#define TRACKER_USED 0
+#define TRACKER_USED 1
+#define CAR_MIN_SIZE_PX 2
 
 int main(int argc, char **argv)
 {
     cv::VideoCapture video; // Capture Object
     cv::Mat frame; // Current Captured Frame
-    std::vector<Car> cars; // List of Cars
+    std::vector<Car *> cars; // List of Cars
     ImageLine mainLine; // Line used to count cars
     VirtualDetection *detector; // The car detector method
     VirtualTrack *tracker; // The car tracker method
@@ -65,7 +66,7 @@ int main(int argc, char **argv)
         detector = new BGMOG2Detector(5, 5.0, true, 0.01, 250, MORPH_SIZE);
         break;
     case 1:
-        detector = new BGMOGDetector(0.05, 250, MORPH_SIZE);
+        detector = new BGMOGDetector(0.05, 200, MORPH_SIZE);
         break;
     case 0:
     default:
@@ -75,11 +76,11 @@ int main(int argc, char **argv)
 
     switch (TRACKER_USED) {
     case 1:
-//        tracker = new KalmanFilterTracker(cv::Size(10, 10), cv::Size(40, 40), 5, 10);
+        tracker = new KalmanFilterTracker(cv::Size(CAR_MIN_SIZE_PX, CAR_MIN_SIZE_PX), cv::Size(40, 40), 5);
         break;
     case 0:
     default:
-        tracker = new SimpleTracker(cv::Size(10, 10), cv::Size(40, 40), 5, 10);
+        tracker = new SimpleTracker(cv::Size(CAR_MIN_SIZE_PX, CAR_MIN_SIZE_PX), cv::Size(40, 40), 5, 10);
         break;
     }
 

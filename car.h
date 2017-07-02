@@ -11,9 +11,15 @@ class Car
     std::vector<cv::Point> _positions;
     int _lastSeenFrame;
     bool _countedFlag;
+    bool _matched;
+    double _carDiagonal;
+    cv::Point _predictedPos;
     cv::Rect _boundRect;
 
     static const std::vector<cv::Scalar> carColours;
+protected:
+    void _predictNextPosition();
+
 public:
     Car(int number, const cv::Point &initialPosition, const cv::Rect &boundRect);
 
@@ -25,6 +31,8 @@ public:
 
     void updatePosition(const cv::Point &newPosition);
 
+    void update(const cv::Point &newPosition, const cv::Rect boundRect);
+
     void drawCar(cv::Mat &image);
 
     void notFounded();
@@ -34,6 +42,14 @@ public:
     bool wasCounted();
 
     int getLastSeenFrame();
+
+    cv::Point &getPredictedPosition();
+
+    double getCarDiagonalSize();
+
+    void setMatched(bool matchFlag);
+
+    bool getMatched();
 };
 
 #endif // CAR_H

@@ -8,9 +8,9 @@ BGMOGDetector::BGMOGDetector(double learningRate, int thresholdValue, int morphB
     _thresholdValue(thresholdValue),
     _morphboxSize(morphBoxSize),
     _startFlag(true),
-    _showFGMask(false),
+    _showFGMask(true),
     _showBGMask(false),
-    _showBinarizedFGMask(false),
+    _showBinarizedFGMask(true),
     _showMorphFGMask(true),
     _fgMaskWinName("Foreground Mask"),
     _bgMaskWinName("Background Mask"),
@@ -82,7 +82,7 @@ void BGMOGDetector::init()
 
 void BGMOGDetector::_morphFilter(const cv::Mat &src, cv::Mat &dst, int operation, int structElementSize)
 {
-    cv::Mat kernel = cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(structElementSize, structElementSize));
+    cv::Mat kernel = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(structElementSize, structElementSize));
 
     if (operation == cv::MORPH_OPEN) {
         // Remove Small Blobs
@@ -95,7 +95,7 @@ void BGMOGDetector::_morphFilter(const cv::Mat &src, cv::Mat &dst, int operation
 
         // Merge adjacent big blobs
         cv::dilate(closing, dst, kernel, cv::Point(-1,-1), 2);
-    } else {
+    } else if (operation == cv::MORPH_CLOSE) {
         // Fill holes
         cv::Mat closing;
         cv::morphologyEx(src, closing, cv::MORPH_CLOSE, kernel);
@@ -106,6 +106,15 @@ void BGMOGDetector::_morphFilter(const cv::Mat &src, cv::Mat &dst, int operation
 
         // Merge adjacent big blobs
         cv::dilate(opening, dst, kernel, cv::Point(-1,-1), 2);
+    } else {
+        cv::Mat operationsRst = src.clone();
+        cv::dilate(operationsRst, operationsRst, kernel);
+        cv::dilate(operationsRst, operationsRst, kernel);
+        cv::erode(operationsRst, operationsRst, kernel);
+        cv::dilate(operationsRst, operationsRst, kernel);
+        cv::dilate(operationsRst, operationsRst, kernel);
+        cv::erode(operationsRst, operationsRst, kernel);
+        dst = operationsRst.clone();
     }
 }
 

@@ -15,28 +15,24 @@ class KalmanFilterTracker : public VirtualTrack
     cv::Size _minCarSize;
     cv::Size _maxCarSize;
     int _maxUnseenFrames;
-    int _maxSpeed;
 
     // Car Countours
     std::vector<std::vector<cv::Point>> _carContours;
     int _carCounter;
 
     bool _startFlag;
-    cv::Scalar _boundRectColor;
 
     bool _validateCar(const cv::Rect& boundRect);
 
     cv::Point _getCarCentroid(const cv::Rect& boundRect);
 
-    bool _updateCar(Car &car, std::vector<std::pair<cv::Point , cv::Rect>> &sceneCars);
-
-    bool _isValidSpeed(double magnitude, double angle, double maxSpeed, double minSpeed);
+    void _updateCars(std::vector<Car *> &cars, std::vector<std::pair<cv::Point, cv::Rect> > &sceneCars, ImageLine &line);
 public:
     KalmanFilterTracker(const cv::Size &minCarSize, const cv::Size &maxCarSize,
-                        int maxUnseenFrames, int maxSpeed);
+                        int maxUnseenFrames);
 
     int process(const cv::Mat &frame, const cv::Mat &srcBlobs, ImageLine &imageLine,
-                 std::vector<Car> &cars) override;
+                 std::vector<Car *> &cars) override;
 };
 
 #endif // KALMANFILTERTRACKER_H

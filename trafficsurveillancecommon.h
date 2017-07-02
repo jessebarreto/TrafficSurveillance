@@ -32,7 +32,7 @@ int runSetup(cv::VideoCapture &video, ImageLine &line, int captureAreaSize);
 /*!
  * \brief Run Video in a Loop
  */
-void runVideo(cv::VideoCapture &video, cv::Mat &frame, ImageLine &imageLine, std::vector<Car> &cars, bool loop,
+void runVideo(cv::VideoCapture &video, cv::Mat &frame, ImageLine &imageLine, std::vector<Car *> &cars, bool loop,
               int videoSpeed, bool hasTimer, VirtualDetection *indetificator, VirtualTrack *tracker);
 
 /*!

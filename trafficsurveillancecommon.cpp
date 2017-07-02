@@ -63,7 +63,7 @@ int runSetup(cv::VideoCapture &video, ImageLine &imageLine, int captureAreaSize 
     return 0;
 }
 
-void runVideo(cv::VideoCapture &video, cv::Mat &frame, ImageLine &imageLine, std::vector<Car> &cars,
+void runVideo(cv::VideoCapture &video, cv::Mat &frame, ImageLine &imageLine, std::vector<Car *> &cars,
               bool loop, int videoSpeed, bool hasTimer, VirtualDetection *indetificator, VirtualTrack *tracker)
 {
     cv::Mat identRes;
@@ -92,20 +92,24 @@ void runVideo(cv::VideoCapture &video, cv::Mat &frame, ImageLine &imageLine, std
         indetificator->process(frame, identRes);
 
         // Track Cars in the Scene
-        tracker->process(frame, identRes, imageLine, cars);
+        int counter = tracker->process(frame, identRes, imageLine, cars);
 
         // Ends Timer
         auto end = std::chrono::high_resolution_clock::now();
         auto dt = 1.e-6 * std::chrono::duration_cast<std::chrono::nanoseconds>(end-start).count();
 
         // Draw Cars
-        for (Car &car : cars) {
-            car.drawCar(frame);
+        for (Car *car : cars) {
+            car->drawCar(frame);
         }
 
         if (hasTimer) {
             printDebug(std::string("Processing took ") + std::to_string(dt) + std::string(" ms"), DEBUGINFO);
         }
+
+        // Draw number of cars
+        cv::putText(frame, std::to_string(counter), cv::Point(0,frame.rows - 20), cv::FONT_HERSHEY_PLAIN, 0.5,
+                    cv::Scalar(127, 255, 255));
 
         imageLine.draw(frame);
         cv::imshow(mainWindow, frame);

@@ -33,6 +33,7 @@ add_executable(	TrafficSurveillance #Executable Binary
                 main.cpp #Source List
                 imageline.cpp
                 car.cpp
+                carkf.cpp
                 trafficsurveillancecommon.cpp
                 trafficdebug.cpp
                 trafficvideo.cpp
