@@ -166,17 +166,17 @@ bool carCrossesLine(Car &car, ImageLine &imageLine)
         if (imageLine.isHorizontal()) { // Horizontal
             // Car direction
             if ((carY1 - carY0) > 0) { // Down
-                ret = (carY1 > intersection.y);
+                ret = (carY1 > intersection.y && carY0 < intersection.y);
             } else { // Up
-                ret = (carY0 < intersection.y);
+                ret = (carY0 < intersection.y && carY0 > intersection.y);
             }
             isInsideOfRange = (carX1 <= lineX1 && carX1 >= lineX0);
         } else { // Vertical
             // Car direction
             if ((carX1 - carX0) > 0) { // Right
-                ret = (carX1 > intersection.x);
+                ret = (carX1 > intersection.x && carX0 < intersection.x);
             } else { // Left
-                ret = (carX1 < intersection.x);
+                ret = (carX1 < intersection.x && carX0 > intersection.x);
             }
             isInsideOfRange = (carY1 <= lineY1 && carY1 >= lineY0);
         }

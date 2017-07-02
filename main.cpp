@@ -30,6 +30,7 @@
 #include "bgmog2detector.h"
 
 #include "kalmanfiltertracker.h"
+#include "simpletracker.h"
 
 // Video Configuration
 #define USE_VIDEO 1
@@ -73,9 +74,12 @@ int main(int argc, char **argv)
     }
 
     switch (TRACKER_USED) {
+    case 1:
+//        tracker = new KalmanFilterTracker(cv::Size(10, 10), cv::Size(40, 40), 5, 10);
+        break;
     case 0:
     default:
-        tracker = new KalmanFilterTracker(cv::Size(10, 10), cv::Size(40, 40), 5, 10);
+        tracker = new SimpleTracker(cv::Size(10, 10), cv::Size(40, 40), 5, 10);
         break;
     }
 

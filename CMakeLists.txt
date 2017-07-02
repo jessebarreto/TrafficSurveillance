@@ -42,6 +42,7 @@ add_executable(	TrafficSurveillance #Executable Binary
                 bgmog2detector.cpp
                 bgmogdetector.cpp
                 kalmanfiltertracker.cpp
+                simpletracker.cpp
                 virtualdetection.h #Includes
                 virtualtrack.h
                 )
