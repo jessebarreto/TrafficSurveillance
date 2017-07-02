@@ -50,4 +50,9 @@ void drawLineHandler(int event, int x, int y, int flags, void* ptrLine);
  */
 void getVectorPolarCoord(const cv::Point &src, const cv::Point &dst, double *magnitude, double *angle);
 
+bool carCrossesLine(Car &car, ImageLine &imageLine);
+
+bool getLineIntersection(const cv::Point2f &o1, const cv::Point2f &p1, const cv::Point2f &o2, const cv::Point2f &p2,
+                         cv::Point2f &r);
+
 #endif // TRAFFICSURVEILLANCECOMMON_H

@@ -8,6 +8,7 @@ class ImageLine
 {
     std::pair<cv::Point *, cv::Point *> _points;
 
+    bool _isHorizontal;
 public:
     // Constructors
     ImageLine();
@@ -33,6 +34,8 @@ public:
 
     // Draw itself in a colorful image
     void draw(cv::Mat &image);
+
+    bool isHorizontal();
 };
 
 #endif // IMAGELINE_H

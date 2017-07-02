@@ -16,7 +16,7 @@ public:
     /*!
      * \brief Track cars in the scene
      */
-    virtual void process(const cv::Mat &frame, const cv::Mat &srcBlobs, const ImageLine &imageLine,
+    virtual int process(const cv::Mat &frame, const cv::Mat &srcBlobs, ImageLine &imageLine,
                          std::vector<Car> &cars) = 0;
 };
 

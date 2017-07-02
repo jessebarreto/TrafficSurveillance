@@ -2,6 +2,7 @@
 
 ImageLine::ImageLine()
 {
+    _isHorizontal = false;
     cv::Point *begin = nullptr;
     cv::Point *end = nullptr;
     _points = std::make_pair(begin, end);
@@ -47,6 +48,10 @@ cv::Point &ImageLine::getLineBegin()
 void ImageLine::setLineEnd(cv::Point *lineEnd)
 {
     _points.second = lineEnd;
+    if (isCompleted()) {
+        _isHorizontal = (std::abs(_points.second->x - _points.first->x) >
+                         std::abs(_points.second->y - _points.first->y)) ? true : false;
+    }
 }
 
 cv::Point &ImageLine::getLineEnd()
@@ -64,5 +69,10 @@ void ImageLine::draw(cv::Mat &image)
     if (isCompleted()) {
         cv::line(image, *_points.first, *_points.second, CV_RGB(0, 255, 0));
     }
+}
+
+bool ImageLine::isHorizontal()
+{
+    return _isHorizontal;
 }
 

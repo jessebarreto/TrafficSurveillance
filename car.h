@@ -19,6 +19,10 @@ public:
 
     cv::Point &getLastPosition();
 
+    cv::Point &getFirstPosition();
+
+    int getPositionsSize();
+
     void updatePosition(const cv::Point &newPosition);
 
     void drawCar(cv::Mat &image);

@@ -8,7 +8,7 @@
 
 const static std::string __trafficVideoFiles__[] =  {
                                                         "data/viptraffic.mp4",
-                                                        "data/Bsb-EPGU.mov"
+                                                        "data/Bsb-EPGU.mov",
                                                         "data/highwayI_raw.avi"
                                                     };
 

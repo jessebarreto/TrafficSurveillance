@@ -193,10 +193,9 @@ void MotionSegmentationDetectorHS::_morphFilter(const cv::Mat &src, cv::Mat &dst
     }
 }
 
-void MotionSegmentationDetectorHS::_filterParamMorphSettingHandler(int value, void *data)
+void MotionSegmentationDetectorHS::_filterParamMorphSettingHandler(__attribute__((unused)) int value, void *data)
 {
     int *morph = static_cast<int *>(data);
-
     *morph = *morph < 1 ? 1 : *morph;
 }
 

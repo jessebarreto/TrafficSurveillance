@@ -2,34 +2,28 @@
 
 #include "trafficsurveillancecommon.h"
 
-KalmanFilterTracker::KalmanFilterTracker(const cv::Size &minCarSize, const cv::Size &maxCarSize, int maxUnseenFrames) :
+KalmanFilterTracker::KalmanFilterTracker(const cv::Size &minCarSize, const cv::Size &maxCarSize, int maxUnseenFrames, int maxSpeed) :
     _minCarSize(minCarSize),
     _maxCarSize(maxCarSize),
     _maxUnseenFrames(maxUnseenFrames),
+    _maxSpeed(maxSpeed),
     _carCounter(0),
     _startFlag(true),
-    _boundRectColor(CV_RGB(0,0,255)),
-    _showAllCountours(false),
-    _allCountoursWinName("All Countours")
+    _boundRectColor(CV_RGB(0,0,255))
 {
 
 }
 
-void KalmanFilterTracker::process(const cv::Mat &frame, const cv::Mat &srcBlobs, const ImageLine &imageLine, std::vector<Car> &cars)
+int KalmanFilterTracker::process(const cv::Mat &frame, const cv::Mat &srcBlobs, ImageLine &imageLine,
+                                  std::vector<Car> &cars)
 {
     int i;
     if (_startFlag) {
-        setWindow(_allCountoursWinName);
 
         _startFlag = false;
     } else {
         // Find Contours
         cv::findContours(srcBlobs, _carContours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
-        if (_showAllCountours) {
-            cv::Mat frameWContours = frame.clone();
-            cv::drawContours(frameWContours, _carContours, -1, CV_RGB(255, 0, 0));
-            cv::imshow(_allCountoursWinName, frameWContours);
-        }
 
         // Find Contours that fits a car
         std::vector<std::pair<cv::Point , cv::Rect>> sceneCars;
@@ -59,21 +53,24 @@ void KalmanFilterTracker::process(const cv::Mat &frame, const cv::Mat &srcBlobs,
 
         // Count Cars that crosses the line
         for (Car &car : cars) {
-            if (!car.wasCounted()) {
+            if (!car.wasCounted() && carCrossesLine(car, imageLine)) {
                 _carCounter++;
                 car.countCar(true);
+                printDebug("Number of Cars: " + std::to_string(_carCounter), DebugType::DEBUGINFO);
             }
         }
 
         // Remove cars which did not appear for a while
-//        i = 0;
-//        for (Car &car : cars) {
-//            if (car.getLastSeenFrame() >= _maxUnseenFrames) {
-//                cars.erase(cars.begin() + i);
-//            }
-//            i++;
-//        }
+        i = 0;
+        for (Car &car : cars) {
+            if (car.getLastSeenFrame() >= _maxUnseenFrames) {
+                cars.erase(cars.begin() + i);
+            }
+            i++;
+        }
     }
+
+    return _carCounter;
 }
 
 bool KalmanFilterTracker::_validateCar(const cv::Rect &boundRect)
@@ -96,7 +93,7 @@ bool KalmanFilterTracker::_updateCar(Car &car, std::vector<std::pair<cv::Point, 
     for (std::pair<cv::Point , cv::Rect> &sceneCar : sceneCars) {
         double magnitude, angle;
         getVectorPolarCoord(car.getLastPosition(), sceneCar.first, &magnitude, &angle);
-        if (_isValidSpeed(magnitude, 10, 2)) {
+        if (_isValidSpeed(magnitude, angle, _maxSpeed, 1)) {
             car.updatePosition(sceneCar.first);
             return true;
         }
@@ -107,9 +104,9 @@ bool KalmanFilterTracker::_updateCar(Car &car, std::vector<std::pair<cv::Point, 
     return false;
 }
 
-bool KalmanFilterTracker::_isValidSpeed(double magnitude, double maxSpeed, double minSpeed)
+bool KalmanFilterTracker::_isValidSpeed(double magnitude, double angle, double maxSpeed, double minSpeed)
 {
-//    double thresholdMax = std::max(maxSpeed, angle*angle * -26.2624508001 + 22.9183118052 * angle + 25.0); // MAGIC EQUATION
-//    return (magnitude <= thresholdMax && magnitude >= minSpeed);
-    return (magnitude <= maxSpeed && magnitude > minSpeed);
+//    return (magnitude <= maxSpeed && magnitude > minSpeed);
+    double threshold_distance = std::max(10.0, -0.008 * 180.0 / M_PI *angle * 180.0 / M_PI * angle + 0.4 * 180.0 / M_PI * angle + 25.0);
+    return (magnitude <= threshold_distance);
 }

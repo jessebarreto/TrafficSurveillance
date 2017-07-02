@@ -23,6 +23,16 @@ cv::Point &Car::getLastPosition()
     return _positions.back();
 }
 
+cv::Point &Car::getFirstPosition()
+{
+    return _positions.front();
+}
+
+int Car::getPositionsSize()
+{
+    return static_cast<int>(_positions.size());
+}
+
 void Car::updatePosition(const cv::Point &newPosition)
 {
     _positions.push_back(newPosition);
@@ -38,6 +48,8 @@ void Car::drawCar(cv::Mat &image)
         cv::circle(image, point, 2, color, -1);
         cv::polylines(image, _positions, false, color);
         cv::rectangle(image, _boundRect, color);
+        cv::putText(image, std::to_string(_carNumber), _boundRect.tl(), cv:: FONT_HERSHEY_SIMPLEX, 0.5,
+                    cv::Scalar::all(0));
     }
 }
 

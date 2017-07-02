@@ -105,7 +105,7 @@ void BGMOGDetector::_morphFilter(const cv::Mat &src, cv::Mat &dst, int operation
         cv::morphologyEx(closing, opening, cv::MORPH_OPEN, kernel);
 
         // Merge adjacent big blobs
-        cv::dilate(opening, dst, kernel, cv::Point(-1,-1), 3);
+        cv::dilate(opening, dst, kernel, cv::Point(-1,-1), 2);
     }
 }
 

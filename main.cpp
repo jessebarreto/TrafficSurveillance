@@ -32,12 +32,12 @@
 #include "kalmanfiltertracker.h"
 
 // Video Configuration
-#define USE_VIDEO 2
+#define USE_VIDEO 1
 #define DEFAULT_VIDEO_NUMBER 0
 #define DEFAULT_DATASET_NUMBER 0
-#define LOOP_VIDEO true
-#define VIDEO_SPEED 100 // ms
-#define VIDEO_PROC_TIMER true
+#define LOOP_VIDEO false
+#define VIDEO_SPEED 300 // ms
+#define VIDEO_PROC_TIMER false
 
 #define DETECTOR_USED 1
 #define MORPH_SIZE 4
@@ -64,7 +64,7 @@ int main(int argc, char **argv)
         detector = new BGMOG2Detector(5, 5.0, true, 0.01, 250, MORPH_SIZE);
         break;
     case 1:
-        detector = new BGMOGDetector(0.025, 250, MORPH_SIZE);
+        detector = new BGMOGDetector(0.05, 250, MORPH_SIZE);
         break;
     case 0:
     default:
@@ -75,7 +75,7 @@ int main(int argc, char **argv)
     switch (TRACKER_USED) {
     case 0:
     default:
-        tracker = new KalmanFilterTracker(cv::Size(20, 20), cv::Size(40, 40), 7);
+        tracker = new KalmanFilterTracker(cv::Size(10, 10), cv::Size(40, 40), 5, 10);
         break;
     }
 
