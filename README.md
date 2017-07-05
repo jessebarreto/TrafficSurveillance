@@ -14,3 +14,17 @@ In: IEEE Conference on Computer Vision and Pattern Recognition (CVPR), San Diego
 http://visal.cs.cityu.edu.hk/downloads/
 http://www.ipf.kit.edu/downloads_data_set_AIS_vehicle_tracking.php
 http://www.tft.lth.se/en/research/video-analysis/co-operation/data-exchange/
+
+## Compiling and Running
+
+This project was developed and tested in a GNU-Linux computer.
+To compile it's necessary to have OpenCV 2.4 installed and 
+CMake >= 2.8.
+
+Open terminal:
+To compile:
+	$ cmake .
+	$ make 
+
+To run:
+	$ ./TrafficSurveillance
