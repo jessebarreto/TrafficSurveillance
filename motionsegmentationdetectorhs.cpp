@@ -9,7 +9,7 @@ MotionSegmentationDetectorHS::MotionSegmentationDetectorHS(double alpha, int mor
     _alpha(alpha),
     _morphBoxSize(morphBoxSize),
     _startFlag(true),
-    _showFlowFrameFlag(false),
+    _showFlowFrameFlag(true),
     _showMagFlowFlag(false),
     _showBinaryMagFlowFlag(false),
     _showMorphFlag(true),

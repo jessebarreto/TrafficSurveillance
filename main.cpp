@@ -7,13 +7,11 @@
  * Projeto 3 – Objetivo
  * Identificar padroes de trafico de veiculos dado a imagem de uma camera de transito.
  *
- *  * 1 - Reconhecer veiculos
+ *  * 1 - Reconhecer veículos
  *
  *  * 2 - Contar os veiculos visualizados
  *
  *  * 3 - Predizer a trajetoria dos veiculos identificados
- *
- *  * 4 - Estimar dado a taxa de atualizacao do video a velocidade desses veiculos
  *
  * Nome: Jessé Barreto de Barros
  * Matrícula: 17/0067033
@@ -34,16 +32,16 @@
 
 // Video Configuration
 #define USE_VIDEO 1
-#define DEFAULT_VIDEO_NUMBER 1
+#define DEFAULT_VIDEO_NUMBER 0
 #define DEFAULT_DATASET_NUMBER 5
 #define LOOP_VIDEO false
 #define VIDEO_SPEED 300 // ms
-#define VIDEO_PROC_TIMER false
+#define VIDEO_PROC_TIMER true
 
 #define DETECTOR_USED 2
 #define MORPH_SIZE 4
-#define TRACKER_USED 1
-#define CAR_MIN_SIZE_PX 2
+#define TRACKER_USED 0
+#define CAR_MIN_SIZE_PX 4
 
 int main(int argc, char **argv)
 {

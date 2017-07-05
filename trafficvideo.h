@@ -9,7 +9,12 @@
 const static std::string __trafficVideoFiles__[] =  {
                                                         "data/viptraffic.mp4",
                                                         "data/Bsb-EPGU.mov",
-                                                        "data/highwayI_raw.avi"
+                                                        "data/highwayI_raw.avi",
+                                                        "data/rene_video.mov",
+                                                        "data/Camera_1.mp4",
+                                                        "data/Camera_2.mp4",
+                                                        "data/Camera_3.mp4",
+                                                        "data/Camera_4.mp4"
                                                     };
 
 const static int __trafficCarPerVideo__[] = {10, 129, 57};

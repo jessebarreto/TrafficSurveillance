@@ -30,13 +30,9 @@ class SimpleTracker : public VirtualTrack
 
     cv::Point _getCarCentroid(const cv::Rect& boundRect);
 
-    void _updateCarsV2(std::vector<Car *> &cars, std::vector<std::pair<cv::Point , cv::Rect>> &sceneCars, ImageLine &line);
-
     void _updateCars(std::vector<Car *> &cars, std::vector<std::pair<cv::Point , cv::Rect>> &sceneCars, ImageLine &line);
 
     bool _updateCar(Car &car, std::vector<std::pair<cv::Point, cv::Rect> > &sceneCars, ImageLine &line);
-
-    bool _isValidSpeed(double magnitude, double angle, double maxSpeed, double minSpeed, bool horizontal);
 public:
     SimpleTracker(const cv::Size &minCarSize, const cv::Size &maxCarSize,
                         int maxUnseenFrames, int maxSpeed);

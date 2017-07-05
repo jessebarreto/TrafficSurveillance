@@ -31,7 +31,7 @@ int SimpleTracker::process(const cv::Mat &frame, const cv::Mat &srcBlobs, ImageL
     }
 
     // Update the Existing Cars
-    _updateCarsV2(cars, sceneCars, imageLine);
+    _updateCars(cars, sceneCars, imageLine);
 
     // Create New Cars with the new sceneCars
     for (std::pair<cv::Point , cv::Rect> &sceneCar : sceneCars) {
@@ -72,7 +72,7 @@ cv::Point SimpleTracker::_getCarCentroid(const cv::Rect &boundRect)
     return cv::Point(cx, cy);
 }
 
-void SimpleTracker::_updateCarsV2(std::vector<Car *> &cars, std::vector<std::pair<cv::Point, cv::Rect> > &sceneCars, ImageLine &line)
+void SimpleTracker::_updateCars(std::vector<Car *> &cars, std::vector<std::pair<cv::Point, cv::Rect> > &sceneCars, ImageLine &line)
 {
     if (!cars.empty()) {
         for (Car *car : cars) {
@@ -107,45 +107,3 @@ void SimpleTracker::_updateCarsV2(std::vector<Car *> &cars, std::vector<std::pai
         }
     }
 }
-
-void SimpleTracker::_updateCars(std::vector<Car *> &cars, std::vector<std::pair<cv::Point, cv::Rect> > &sceneCars, ImageLine &line)
-{
-    for (size_t id = 0; id < cars.size(); id++) {
-        bool updated = _updateCar(*cars.at(id), sceneCars, line);
-        if (updated) {
-            sceneCars.erase(sceneCars.begin() + id);
-        }
-    }
-}
-
-bool SimpleTracker::_updateCar(Car &car, std::vector<std::pair<cv::Point, cv::Rect> > &sceneCars, ImageLine& line)
-{
-    // Search for matches
-    for (std::pair<cv::Point , cv::Rect> &sceneCar : sceneCars) {
-        double magnitude, angle;
-        getVectorPolarCoord(car.getLastPosition(), sceneCar.first, &magnitude, &angle);
-        bool horizontalMovement = !line.isHorizontal();
-        if (_isValidSpeed(magnitude, angle, _maxSpeed, 1, horizontalMovement)) {
-            car.updatePosition(sceneCar.first);
-            return true;
-        }
-    }
-
-    // No Matching
-    car.notFounded();
-    return false;
-}
-
-bool SimpleTracker::_isValidSpeed(double magnitude, double angle, double maxSpeed, double minSpeed, bool horizontal)
-{
-    double angleSwitch = 0.0;
-    if (horizontal) {
-        angleSwitch += 90.0;
-    }
-//    return (magnitude <= maxSpeed && magnitude > minSpeed);
-    double threshold_distance = std::max(10.0, -0.008 * ((180.0 / M_PI *angle) + angleSwitch) *
-                                         ((180.0 / M_PI * angle) + angleSwitch) +
-                                         0.4 * ((180.0 / M_PI * angle) + angleSwitch) + 25.0);
-    return (magnitude <= threshold_distance);
-}
-
