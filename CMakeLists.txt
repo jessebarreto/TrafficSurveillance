@@ -46,8 +46,10 @@ add_executable(	TrafficSurveillance #Executable Binary
                 main.cpp #Source List
                 imageline.cpp
                 backgroundsubtractor.cpp
+                camshifttracker.cpp
                 car.cpp
                 carkf.cpp
+                carcs.cpp
                 trafficsurveillancecommon.cpp
                 trafficdebug.cpp
                 trafficvideo.cpp

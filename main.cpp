@@ -30,6 +30,7 @@
 
 #include "kalmanfiltertracker.h"
 #include "simpletracker.h"
+#include "camshifttracker.h"
 
 // BGS Library Implementations
 #include "package_bgs/MultiLayer/CMultiLayerBGS.h"
@@ -59,11 +60,27 @@
 */
 #define DETECTOR_USED 4
 
+/*!
+ * Size of the structuring element when using morphological filter. (Pixels)
+ */
 #define MORPH_SIZE 4
-#define TRACKER_USED 0
-#define CAR_MIN_SIZE_PX 4
-////////////////////////////////////////////////
 
+/*!
+ * List of Possible Trackers
+ * 0    - Weighted Moving Average Filter
+ * 1    - Kalman Filter
+ * 2    - CamShift Filter
+ * 3    - MeanShift Filter
+ */
+#define TRACKER_USED 1
+
+// Cars Dimension Limits
+#define CAR_MIN_SIZE_PX 5
+#define CAR_MAX_SIZE_PX 80
+
+#define CAR_UNSEEN_LIMIT 10
+
+////////////////////////////////////////////////
 int main(int argc, char **argv)
 {
     cv::VideoCapture video; // Capture Object
@@ -100,12 +117,15 @@ int main(int argc, char **argv)
     }
 
     switch (TRACKER_USED) {
+    case 2:
+        tracker = new CamShiftTracker(64, 180, 64, cv::Size(CAR_MIN_SIZE_PX, CAR_MIN_SIZE_PX), cv::Size(CAR_MAX_SIZE_PX, CAR_MAX_SIZE_PX), CAR_UNSEEN_LIMIT);
+        break;
     case 1:
-        tracker = new KalmanFilterTracker(cv::Size(CAR_MIN_SIZE_PX, CAR_MIN_SIZE_PX), cv::Size(40, 40), 5);
+        tracker = new KalmanFilterTracker(cv::Size(CAR_MIN_SIZE_PX, CAR_MIN_SIZE_PX), cv::Size(CAR_MAX_SIZE_PX, CAR_MAX_SIZE_PX), CAR_UNSEEN_LIMIT);
         break;
     case 0:
     default:
-        tracker = new SimpleTracker(cv::Size(CAR_MIN_SIZE_PX, CAR_MIN_SIZE_PX), cv::Size(40, 40), 5, 10);
+        tracker = new SimpleTracker(cv::Size(CAR_MIN_SIZE_PX, CAR_MIN_SIZE_PX), cv::Size(CAR_MAX_SIZE_PX, CAR_MAX_SIZE_PX), CAR_UNSEEN_LIMIT, 10);
         break;
     }
 
