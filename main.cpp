@@ -26,9 +26,17 @@
 #include "motionsegmentationdetectorhs.h"
 #include "bgmogdetector.h"
 #include "bgmog2detector.h"
+#include "backgroundsubtractor.h"
 
 #include "kalmanfiltertracker.h"
 #include "simpletracker.h"
+
+// BGS Library Implementations
+#include "package_bgs/MultiLayer/CMultiLayerBGS.h"
+#include "package_bgs/MultiLayer/MultiLayer.h"
+#include "package_bgs/PixelBasedAdaptiveSegmenter.h"
+#include "package_tracking/BlobTracking.h"
+#include "package_analysis/VehicleCouting.h"
 
 // Video Configuration
 #define USE_VIDEO 1
@@ -38,10 +46,23 @@
 #define VIDEO_SPEED 300 // ms
 #define VIDEO_PROC_TIMER true
 
-#define DETECTOR_USED 2
+/////////////////////////////////////////////////
+// Application Configuration
+
+/*!
+* List of Possible Detectors
+* 0    - Motion Segmentation using Horn-Schunck Optical Flow Algorithm
+* 1    - BGS Mean of Gaussians v1
+* 2    - BGS Mean of Gaussians v2 (It works better than v1)
+* 3    - BGS Multilayer algorithm.
+* 4    - BGS Pixel based algorithm.
+*/
+#define DETECTOR_USED 4
+
 #define MORPH_SIZE 4
 #define TRACKER_USED 0
 #define CAR_MIN_SIZE_PX 4
+////////////////////////////////////////////////
 
 int main(int argc, char **argv)
 {
@@ -60,6 +81,12 @@ int main(int argc, char **argv)
     }
 
     switch (DETECTOR_USED) {
+    case 4:
+        detector = new BackgroundSubtractor(new bgslibrary::algorithms::PixelBasedAdaptiveSegmenter());
+        break;
+    case 3:
+        detector = new BackgroundSubtractor(new MultiLayer);
+        break;
     case 2:
         detector = new BGMOG2Detector(5, 5.0, true, 0.01, 250, MORPH_SIZE);
         break;

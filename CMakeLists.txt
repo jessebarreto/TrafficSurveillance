@@ -25,13 +25,27 @@ include_directories(SYSTEM "${OpenCV_INCLUDE_DIRS}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic -Wall -Wextra -Wcast-align -Wcast-qual -std=c++0x")
 set(CMAKE_CXX_STANDARD 11)
 
+# Add BGS Library
+file(GLOB_RECURSE bgs_src package_bgs/*.cpp package_bgs/*.c)
+file(GLOB_RECURSE bgs_inc package_bgs/*.h)
+file(GLOB_RECURSE tracking_src package_tracking/*.cpp package_tracking/*.c)
+file(GLOB_RECURSE tracking_inc package_tracking/*.h)
+file(GLOB_RECURSE analysis_src package_analysis/*.cpp)
+file(GLOB_RECURSE analysis_inc package_analysis/*.h)
+
 ## Copy data files from source folder to binary folder
 file(COPY data DESTINATION .)
+
+## Compile the BGS Library as Static
+add_library(simple_vehicle_counting STATIC ${bgs_src} ${tracking_src} ${analysis_src})
+target_link_libraries(simple_vehicle_counting ${OpenCV_LIBS})
+set_property(TARGET simple_vehicle_counting PROPERTY PUBLIC_HEADER ${bgs_inc} ${tracking_inc} ${analysis_inc})
 
 ## Compile Executable
 add_executable(	TrafficSurveillance #Executable Binary
                 main.cpp #Source List
                 imageline.cpp
+                backgroundsubtractor.cpp
                 car.cpp
                 carkf.cpp
                 trafficsurveillancecommon.cpp
@@ -47,4 +61,4 @@ add_executable(	TrafficSurveillance #Executable Binary
                 virtualdetection.h #Includes
                 virtualtrack.h
                 )
-target_link_libraries(TrafficSurveillance ${OpenCV_LIBS})
+target_link_libraries(TrafficSurveillance ${OpenCV_LIBS} simple_vehicle_counting)
