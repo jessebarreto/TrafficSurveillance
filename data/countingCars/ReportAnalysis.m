@@ -65,33 +65,33 @@ morphValues(curVideo, 1, 1)         = 5;        % morph
 carsCountedTrue(curVideo, 1, 1)     = 10;       % CountTrue
 carsCountedFalse(curVideo, 1, 1)    = 0;        % CountFalse
 carsNotCountedTrue(curVideo, 1, 1)  = 0;        % NotCountTrue
-processTimeValues(curVideo, 1, 1)   = 25.51;    % ProcessTime
+processTimeValues(curVideo, 1, 1)   = 9.51;    	% ProcessTime
 % Exp MOG-Kalman
-morphValues(curVideo, 1, 2)         = 5;    % morph
+morphValues(curVideo, 1, 2)         = 5;    	% morph
 carsCountedTrue(curVideo, 1, 2)     = 9;    
 carsCountedFalse(curVideo, 1, 2)    = 0;
 carsNotCountedTrue(curVideo, 1, 2)  = 1;
-processTimeValues(curVideo, 1, 1)   = 26.98;    % ProcessTime
+processTimeValues(curVideo, 1, 1)   = 9.98;    	% ProcessTime
 % Exp Multilayer-Avg
-morphValues(curVideo, 2, 1)         = 1;    % morph
+morphValues(curVideo, 2, 1)         = 1;    	% morph
 carsCountedTrue(curVideo, 2, 1)     = 9;
 carsCountedFalse(curVideo, 2, 1)    = 0;
 carsNotCountedTrue(curVideo, 2, 1)  = 1;
 processTimeValues(curVideo, 1, 1)   = 28.32;    % ProcessTime
 % Exp Multilayer-Kalman
-morphValues(curVideo, 2, 2)         = 1;    % morph
+morphValues(curVideo, 2, 2)         = 1;    	% morph
 carsCountedTrue(curVideo, 2, 2)     = 9;
 carsCountedFalse(curVideo, 2, 2)    = 0;
 carsNotCountedTrue(curVideo, 2, 2)  = 1;
 processTimeValues(curVideo, 1, 1)   = 29.89;    % ProcessTime
 % Exp PBAS-Avg
-morphValues(curVideo, 3, 1)         = 1;    % morph
+morphValues(curVideo, 3, 1)         = 1;    	% morph
 carsCountedTrue(curVideo, 3, 1)     = 6;
 carsCountedFalse(curVideo, 3, 1)    = 1;
 carsNotCountedTrue(curVideo, 3, 1)  = 5;
 processTimeValues(curVideo, 1, 1)   = 49.16;    % ProcessTime
 % Exp PBAS-Kalman
-morphValues(curVideo, 3, 2)         = 1;    % morph
+morphValues(curVideo, 3, 2)         = 1;    	% morph
 carsCountedTrue(curVideo, 3, 2)     = 7;
 carsCountedFalse(curVideo, 3, 2)    = 0;
 carsNotCountedTrue(curVideo, 3, 2)  = 3;
@@ -99,6 +99,33 @@ processTimeValues(curVideo, 1, 1)   = 50.78;    % ProcessTime
 
 %%
 % Video 2
+curVideo = 2;
+carMinSizeValues(1) = 10;
+carMaxSizeValues(1) = 50;
+% Exp MOG-Avg
+morphValues(curVideo, 			1, 1)	= 3;        % morph
+carsCountedTrue(curVideo, 		1, 1)   = 32;       % CountTrue
+carsCountedFalse(curVideo, 		1, 1)   = 6;        % CountFalse
+carsNotCountedTrue(curVideo, 	1, 1)  	= 69;       % NotCountTrue
+processTimeValues(curVideo, 	1, 1)   = 18.40;    % ProcessTime
+% Exp MOG-Kalman
+morphValues(curVideo, 			1, 2)   = 3;        % morph
+carsCountedTrue(curVideo, 		1, 2)   = 36;       % CountTrue
+carsCountedFalse(curVideo, 		1, 2)   = 2;        % CountFalse
+carsNotCountedTrue(curVideo, 	1, 2)  	= 65;       % NotCountTrue
+processTimeValues(curVideo, 	1, 2)   = 17.88;    % ProcessTime
+% Exp Multu-Avg
+morphValues(curVideo, 			2, 1)   = 3;        % morph
+carsCountedTrue(curVideo, 		2, 1)   = 29;       % CountTrue
+carsCountedFalse(curVideo, 		2, 1)   = 2;        % CountFalse
+carsNotCountedTrue(curVideo, 	2, 1)  	= 72;       % NotCountTrue
+processTimeValues(curVideo, 	2, 1)   = 102.22;    % ProcessTime
+% Exp Multu-Kalman
+morphValues(curVideo, 			2, 2)   = 3;        % morph
+carsCountedTrue(curVideo, 		2, 2)   = 29;       % CountTrue
+carsCountedFalse(curVideo, 		2, 2)   = 2;        % CountFalse
+carsNotCountedTrue(curVideo, 	2, 2)  	= 72;       % NotCountTrue
+processTimeValues(curVideo, 	2, 2)   = 102.22;    % ProcessTime
 
 % Video 3
 
