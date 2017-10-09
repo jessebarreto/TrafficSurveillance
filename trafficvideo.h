@@ -6,18 +6,24 @@
 #include <opencv2/opencv.hpp>
 #include <opencv2/opencv_modules.hpp>
 
-const static std::string __trafficVideoFiles__[] =  {
-                                                        "data/viptraffic.mp4",
-                                                        "data/Bsb-EPGU.mov",
-                                                        "data/highwayI_raw.avi",
-                                                        "data/rene_video.mov",
-                                                        "data/Camera_1.mp4",
-                                                        "data/Camera_2.mp4",
-                                                        "data/Camera_3.mp4",
-                                                        "data/Camera_4.mp4"
+const static std::string __trafficVideoFiles__[] =  {   "data/cam1_cars10.mp4",
+                                                        "data/cam1_cars10.mp4",
+                                                        "data/cam2_cars101.avi",
+                                                        "data/cam3_cars50.mp4",
+                                                        "data/cam4_cars28.wmv",
+                                                        "data/cam5_cars17.MOV",
+                                                        "data/cam6_cars29.m4v",
+                                                        "data/cam7_cars9.MOV",
+                                                        "data/cam8_cars20.MP4",
+                                                        "data/cam9_cars12.MP4",
+                                                        "data/cam10_cars81.mp4",
+                                                        "data/cam11_cars84.mov",
+                                                        "data/cam12_cars125.mp4",
+                                                        "data/cam13_cars35.avi",
+                                                        "data/cam14_cars80.mp4",
                                                     };
 
-const static int __trafficCarPerVideo__[] = {10, 129, 57};
+//const static int __trafficCarPerVideo__[] = {10, 129, 57};
 
 /*!
  * \brief Opens a video from a source video.

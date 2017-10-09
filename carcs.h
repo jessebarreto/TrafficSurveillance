@@ -10,7 +10,6 @@ class CarCS : public Car
 {
     int _vmin, _vmax, _smin;
 
-    cv::Point _nextPos;
     cv::Rect _trackedWindow;
     cv::Mat _roi;
     cv::Mat _hsvRoi;
@@ -18,7 +17,7 @@ class CarCS : public Car
     cv::Mat _roiHist;
     cv::TermCriteria _criteria;
 
-    void _predictNextPositionCS();
+    cv::Point _nextPos;
 
 public:
     CarCS(int vmin, int vmax, int smin, int number, const cv::Point &initialPosition, const cv::Rect &boundRect, const cv::Mat &frame);
@@ -28,6 +27,8 @@ public:
     void notFounded();
 
     cv::Point &getPredictedPosition();
+
+    void updateCamShift(const cv::Mat &frame);
 };
 
 #endif // CARCS_H

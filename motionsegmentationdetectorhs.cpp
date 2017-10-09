@@ -47,8 +47,8 @@ void MotionSegmentationDetectorHS::process(const cv::Mat &frame, cv::Mat &result
             setWindow(_morphWinName);
             cv::createTrackbar("HS Alpha (/100)", _morphWinName, &_alphaChangeable, _maxAlpha,
                                _filterParamAlphaSettingHandler, static_cast<void *>(&_alpha));
-            cv::createTrackbar("Morph Size", _morphWinName, &_morphBoxSize, 100,
-                               _filterParamMorphSettingHandler, static_cast<void *>(&_morphBoxSize));
+//            cv::createTrackbar("Morph Size", _morphWinName, &_morphBoxSize, 100,
+//                               _filterParamMorphSettingHandler, static_cast<void *>(&_morphBoxSize));
         }
 
         _startFlag = false;
@@ -99,6 +99,11 @@ void MotionSegmentationDetectorHS::process(const cv::Mat &frame, cv::Mat &result
 
 void MotionSegmentationDetectorHS::init()
 {
+}
+
+void MotionSegmentationDetectorHS::setMorphSize(int morphSize)
+{
+    _morphBoxSize = morphSize;
 }
 
 void MotionSegmentationDetectorHS::_calculateFlowHS(const cv::Mat &current, const cv::Mat &previous, cv::Mat &flow,

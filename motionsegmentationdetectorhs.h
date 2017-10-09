@@ -58,6 +58,8 @@ public:
     void process(const cv::Mat &frame, cv::Mat &result) override;
 
     void init() override;
+
+    void setMorphSize(int morphSize) override;
 };
 
 #endif // MOTIONSEGMENTATIONDETECTORHS_H

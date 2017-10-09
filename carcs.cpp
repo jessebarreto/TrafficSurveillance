@@ -25,6 +25,21 @@ CarCS::CarCS(int vmin, int vmax, int smin, int number, const cv::Point &initialP
 
 void CarCS::update(const cv::Mat &frame, const cv::Point &newPosition, const cv::Rect boundRect)
 {
+    Car::update(newPosition, boundRect);
+}
+
+void CarCS::notFounded()
+{
+    Car::notFounded();
+}
+
+cv::Point &CarCS::getPredictedPosition()
+{
+    return _nextPos;
+}
+
+void CarCS::updateCamShift(const cv::Mat &frame)
+{
     float hranges[] = {0,180};
     int channel[] = {0};
     const float* phranges = hranges;
@@ -36,24 +51,11 @@ void CarCS::update(const cv::Mat &frame, const cv::Point &newPosition, const cv:
 
     cv::calcBackProject(&hsv, 1, 0, _roiHist, backProj, &phranges);
 
-    cv::CamShift(backProj, _trackedWindow, _criteria);
+    cv::RotatedRect rotRect = cv::CamShift(backProj, _trackedWindow, _criteria);
 
-    Car::update(_trackedWindow.tl(), boundRect);
+    _nextPos.x = static_cast<int>(rotRect.center.x);
+    _nextPos.y = static_cast<int>(rotRect.center.y);
 }
 
-void CarCS::notFounded()
-{
-    Car::notFounded();
-}
-
-cv::Point &CarCS::getPredictedPosition()
-{
-
-}
-
-void CarCS::_predictNextPositionCS()
-{
-
-}
 
 

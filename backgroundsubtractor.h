@@ -10,6 +10,12 @@ class BackgroundSubtractor : public VirtualDetection
 
     cv::Mat _imgBgkModel;
 
+    int _thresholdValue;
+
+    int _morphBoxSize;
+
+    void _morphFilter(const cv::Mat &src, cv::Mat &dst, int operation, int structElementSize);
+
 public:
     BackgroundSubtractor(IBGS *bgRef);
 
@@ -20,6 +26,8 @@ public:
 
     // Initialization
     void init();
+
+    void setMorphSize(int morphSize) override;
 };
 
 #endif // BACKGROUNDSUBTRACTOR_H

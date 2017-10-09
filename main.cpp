@@ -41,6 +41,7 @@
 
 // Video Configuration
 #define USE_VIDEO 1
+
 #define DEFAULT_VIDEO_NUMBER 0
 #define DEFAULT_DATASET_NUMBER 5
 #define LOOP_VIDEO false
@@ -56,27 +57,26 @@
 * 1    - BGS Mean of Gaussians v1
 * 2    - BGS Mean of Gaussians v2 (It works better than v1)
 * 3    - BGS Multilayer algorithm.
-* 4    - BGS Pixel based algorithm.
+* 4    - BGS Pixel Based Adaptative Segmenter algorithm.
 */
-#define DETECTOR_USED 4
+#define DETECTOR_USED 1
 
 /*!
  * Size of the structuring element when using morphological filter. (Pixels)
  */
-#define MORPH_SIZE 4
+#define MORPH_SIZE 3
 
 /*!
  * List of Possible Trackers
  * 0    - Weighted Moving Average Filter
  * 1    - Kalman Filter
  * 2    - CamShift Filter
- * 3    - MeanShift Filter
  */
 #define TRACKER_USED 1
 
 // Cars Dimension Limits
-#define CAR_MIN_SIZE_PX 5
-#define CAR_MAX_SIZE_PX 80
+#define CAR_MIN_SIZE_P100 10
+#define CAR_MAX_SIZE_P100 50
 
 #define CAR_UNSEEN_LIMIT 10
 
@@ -97,6 +97,18 @@ int main(int argc, char **argv)
         return ret;
     }
 
+    int carMaxSize = CAR_MIN_SIZE_P100;
+    int carMinSize = CAR_MAX_SIZE_P100;
+    int morphSize = MORPH_SIZE;
+
+    // Setup
+    runSetup(video, frame, mainLine, &morphSize, &carMinSize, &carMaxSize, 25);
+
+    // Get Car MinMax Size, Morph Size as %
+    carMaxSize = std::max(frame.rows, frame.cols) * CAR_MAX_SIZE_P100 / 100;
+    carMinSize = std::max(frame.rows, frame.cols) * CAR_MIN_SIZE_P100 / 100;
+    morphSize = std::max(frame.rows, frame.cols) * MORPH_SIZE / 100;
+
     switch (DETECTOR_USED) {
     case 4:
         detector = new BackgroundSubtractor(new bgslibrary::algorithms::PixelBasedAdaptiveSegmenter());
@@ -105,35 +117,32 @@ int main(int argc, char **argv)
         detector = new BackgroundSubtractor(new MultiLayer);
         break;
     case 2:
-        detector = new BGMOG2Detector(5, 5.0, true, 0.01, 250, MORPH_SIZE);
+        detector = new BGMOG2Detector(5, 5.0, true, 0.01, 250, morphSize);
         break;
     case 1:
-        detector = new BGMOGDetector(0.05, 200, MORPH_SIZE);
+        detector = new BGMOGDetector(0.05, 200, morphSize);
         break;
     case 0:
     default:
-        detector = new MotionSegmentationDetectorHS(1.0, MORPH_SIZE);
+        detector = new MotionSegmentationDetectorHS(1.0, morphSize);
         break;
     }
 
     switch (TRACKER_USED) {
     case 2:
-        tracker = new CamShiftTracker(64, 180, 64, cv::Size(CAR_MIN_SIZE_PX, CAR_MIN_SIZE_PX), cv::Size(CAR_MAX_SIZE_PX, CAR_MAX_SIZE_PX), CAR_UNSEEN_LIMIT);
-        break;
+        tracker = new CamShiftTracker(64, 180, 64, cv::Size(carMinSize, carMinSize), cv::Size(carMaxSize, carMaxSize), CAR_UNSEEN_LIMIT);
+//        break;
     case 1:
-        tracker = new KalmanFilterTracker(cv::Size(CAR_MIN_SIZE_PX, CAR_MIN_SIZE_PX), cv::Size(CAR_MAX_SIZE_PX, CAR_MAX_SIZE_PX), CAR_UNSEEN_LIMIT);
+        tracker = new KalmanFilterTracker(cv::Size(carMinSize, carMinSize), cv::Size(carMaxSize, carMaxSize), CAR_UNSEEN_LIMIT);
         break;
     case 0:
     default:
-        tracker = new SimpleTracker(cv::Size(CAR_MIN_SIZE_PX, CAR_MIN_SIZE_PX), cv::Size(CAR_MAX_SIZE_PX, CAR_MAX_SIZE_PX), CAR_UNSEEN_LIMIT, 10);
+        tracker = new SimpleTracker(cv::Size(carMinSize, carMinSize), cv::Size(carMaxSize, carMaxSize), CAR_UNSEEN_LIMIT, 10);
         break;
     }
 
-    // Setup
-    runSetup(video, mainLine, 25);
-
     // Run Video
-    runVideo(video, frame, mainLine, cars, LOOP_VIDEO, VIDEO_SPEED, VIDEO_PROC_TIMER, detector, tracker);
+    runVideo(video, frame, mainLine, cars, &morphSize, &carMinSize, &carMaxSize, LOOP_VIDEO, VIDEO_SPEED, VIDEO_PROC_TIMER, detector, tracker);
 
     return 0;
 }

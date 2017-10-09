@@ -43,6 +43,8 @@ public:
     void process(const cv::Mat &frame, cv::Mat &result) override;
 
     void init();
+
+    void setMorphSize(int morphSize);
 };
 
 #endif // BGMOGDETECTOR_H

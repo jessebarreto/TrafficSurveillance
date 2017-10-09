@@ -46,8 +46,8 @@ void BGMOG2Detector::process(const cv::Mat &frame, cv::Mat &result)
 
         if (_showMorphFGMask) {
             setWindow(_morphFGMaskWinName);
-            cv::createTrackbar("Morph Size", _morphFGMaskWinName, &_morphboxSize, 100,
-                               _filterParamMorphSettingHandler, static_cast<void *>(&_morphboxSize));
+//            cv::createTrackbar("Morph Size", _morphFGMaskWinName, &_morphboxSize, 100,
+//                               _filterParamMorphSettingHandler, static_cast<void *>(&_morphboxSize));
         }
 
         _startFlag = false;
@@ -77,6 +77,11 @@ void BGMOG2Detector::process(const cv::Mat &frame, cv::Mat &result)
             cv::imshow(_morphFGMaskWinName, result);
         }
     }
+}
+
+void BGMOG2Detector::setMorphSize(int morphSize)
+{
+    _morphboxSize = morphSize;
 }
 
 void BGMOG2Detector::init()

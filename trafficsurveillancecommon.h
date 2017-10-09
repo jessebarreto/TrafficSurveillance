@@ -27,12 +27,14 @@ static const std::string mainWindow("Video Window");
 /*!
  * \brief Run application setup
  */
-int runSetup(cv::VideoCapture &video, ImageLine &line, int captureAreaSize);
+int runSetup(cv::VideoCapture &video, cv::Mat &initialFrame, ImageLine &line, int *morphSize, int *carMinSize, int *carMaxSize, int captureAreaSize);
 
 /*!
  * \brief Run Video in a Loop
  */
-void runVideo(cv::VideoCapture &video, cv::Mat &frame, ImageLine &imageLine, std::vector<Car *> &cars, bool loop,
+void runVideo(cv::VideoCapture &video, cv::Mat &frame, ImageLine &imageLine, std::vector<Car *> &cars,
+              int *morphSize, int *carMinSize, int *carMaxSize,
+              bool loop,
               int videoSpeed, bool hasTimer, VirtualDetection *indetificator, VirtualTrack *tracker);
 
 /*!

@@ -15,6 +15,9 @@ public:
 
     // Initialization
     virtual void init() = 0;
+
+    // Set Morph Size
+    virtual void setMorphSize(int morphSize) = 0;
 };
 
 #endif // VIRTUALDETECTION_H

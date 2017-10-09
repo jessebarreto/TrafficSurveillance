@@ -4,13 +4,24 @@
 #include <math.h>
 
 
+static void setupMorphTrackBar(int value, void *data)
+{
+    auto *dataPair = static_cast<std::pair<int *, cv::Mat *> *>(data);
+
+    int *morph = dataPair->first;
+    cv::Mat *frame = dataPair->second;
+
+//    int newMorphSize = std::max(*morph, 1) * std::max(frame->cols, frame->rows) / 100;
+    int newMorphSize = std::max(*morph, 1);
+    *morph = newMorphSize;
+}
+
 void setWindow(const std::string &winName)
 {
     cv::namedWindow(winName, CV_WINDOW_NORMAL);
     cv::resizeWindow(winName, 640, 480);
 }
 
-///////////////////////////////////
 static void setupMouseEvent(int event, int x, int y, int flags __attribute__ ((unused)), void *setupData)
 {
 
@@ -36,7 +47,7 @@ static void setupMouseEvent(int event, int x, int y, int flags __attribute__ ((u
     }
 }
 
-int runSetup(cv::VideoCapture &video, ImageLine &imageLine, int captureAreaSize __attribute__ ((unused)) = 30)
+int runSetup(cv::VideoCapture &video, cv::Mat &initialFrame, ImageLine &imageLine, int *morphSize, int *carMinSize, int *carMaxSize, int captureAreaSize __attribute__ ((unused)) = 30)
 {
     // Capture 1st frame
     cv::Mat firstFrame;
@@ -58,15 +69,23 @@ int runSetup(cv::VideoCapture &video, ImageLine &imageLine, int captureAreaSize 
         cv::waitKey(0);
     }
 
+    firstFrame.copyTo(initialFrame);
+
     cv::destroyWindow(setupWindowName);
+
+    // Set New Main Window
     setWindow(mainWindow);
+    cv::createTrackbar("Morph Size", mainWindow, morphSize, 100, setupMorphTrackBar, static_cast<void *>(new std::pair<int *, cv::Mat *>(morphSize, &firstFrame)));
+
     return 0;
 }
 
 void runVideo(cv::VideoCapture &video, cv::Mat &frame, ImageLine &imageLine, std::vector<Car *> &cars,
+              int *morphSize, int *carMinSize, int *carMaxSize,
               bool loop, int videoSpeed, bool hasTimer, VirtualDetection *indetificator, VirtualTrack *tracker)
 {
     cv::Mat identRes;
+    int counter = 0;
     for (;;) {
         video >> frame;
 
@@ -88,11 +107,13 @@ void runVideo(cv::VideoCapture &video, cv::Mat &frame, ImageLine &imageLine, std
         // Start Timer
         auto start = std::chrono::high_resolution_clock::now();
 
+        indetificator->setMorphSize(*morphSize);
+
         // Identify Cars in the Scene
         indetificator->process(frame, identRes);
 
         // Track Cars in the Scene
-        int counter = tracker->process(frame, identRes, imageLine, cars);
+        counter = tracker->process(frame, identRes, imageLine, cars);
 
         // Ends Timer
         auto end = std::chrono::high_resolution_clock::now();
@@ -114,6 +135,8 @@ void runVideo(cv::VideoCapture &video, cv::Mat &frame, ImageLine &imageLine, std
         imageLine.draw(frame);
         cv::imshow(mainWindow, frame);
     }
+
+    printDebug(std::string("Total Cars Counted: ") + std::to_string(counter), DEBUGINFO);
 }
 
 void getVectorPolarCoord(const cv::Point &src, const cv::Point &dst, double *magnitude, double *angle)
@@ -166,7 +189,7 @@ bool carCrossesLine(Car &car, ImageLine &imageLine)
                                                cv::Point2f(lineX1, lineY1), intersection);
     bool isInsideOfRange = false;
     if (hasIntersection) {
-        // check whether the line is vertical or horizontal
+        // Check whether the line is vertical or horizontal
         if (imageLine.isHorizontal()) { // Horizontal
             // Car direction
             if ((carY1 - carY0) > 0) { // Down

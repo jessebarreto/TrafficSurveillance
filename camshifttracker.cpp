@@ -18,11 +18,19 @@ cv::Point CamShiftTracker::_getCarCentroid(const cv::Rect &boundRect)
     return cv::Point(cx, cy);
 }
 
-void CamShiftTracker::_updateCars(std::vector<Car *> &cars, std::vector<std::pair<cv::Point, cv::Rect> > &sceneCars, ImageLine &line)
+void CamShiftTracker::_updateCars(const cv::Mat &frame, std::vector<Car *> &cars, std::vector<std::pair<cv::Point, cv::Rect> > &sceneCars, ImageLine &line)
 {
     if (!cars.empty()) {
-
         int idFrame = 0;
+
+        // Set The Cars To Be Unmatched
+        for (Car *car : cars) {
+            car->setMatched(false);
+            CarCS *carcs = static_cast<CarCS *>(car);
+            carcs->updateCamShift(frame);
+        }
+
+        // Search for the Cars
         for (std::pair<cv::Point , cv::Rect> &sceneCar : sceneCars) {
             double leastDistance = std::numeric_limits<double>::max();
             int indexLeastDistance = 0;
@@ -43,11 +51,11 @@ void CamShiftTracker::_updateCars(std::vector<Car *> &cars, std::vector<std::pai
             idFrame++;
         }
 
-        for (Car *car : cars) {
-            if (!car->getMatched()) {
-                car->notFounded();
-            }
-        }
+//        for (Car *car : cars) {
+//            if (!car->getMatched()) {
+//                car->notFounded();
+//            }
+//        }
     }
 }
 
@@ -77,7 +85,7 @@ int CamShiftTracker::process(const cv::Mat &frame, const cv::Mat &srcBlobs, Imag
     }
 
     // Update the Existing Vehicles
-    _updateCars(cars, sceneCars, imageLine);
+    _updateCars(frame, cars, sceneCars, imageLine);
 
     // Create New Cars with the new sceneCars
     for (std::pair<cv::Point , cv::Rect> &sceneCar : sceneCars) {

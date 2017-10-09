@@ -25,7 +25,7 @@ class CamShiftTracker : public VirtualTrack
 
     cv::Point _getCarCentroid(const cv::Rect& boundRect);
 
-    void _updateCars(std::vector<Car *> &cars, std::vector<std::pair<cv::Point, cv::Rect> > &sceneCars, ImageLine &line);
+    void _updateCars(const cv::Mat &frame, std::vector<Car *> &cars, std::vector<std::pair<cv::Point, cv::Rect> > &sceneCars, ImageLine &line);
 
 public:
     CamShiftTracker(int vmin, int vmax, int smin, const cv::Size &minCarSize, const cv::Size &maxCarSize,
