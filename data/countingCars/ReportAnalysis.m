@@ -2,14 +2,14 @@
 numberOfVideos = 14;
 
 % Number of Identificators - 4
-% * 1    - BGS Mean of Gaussians v2 (It works better than v1)
-% * 2    - BGS Multilayer algorithm.
-% * 3    - BGS Pixel Based Adaptative Segmenter algorithm.
+% * 2    - BGS Mean of Gaussians v2 (It works better than v1)
+% * 3    - BGS Multilayer algorithm.
+% * 4    - BGS Pixel Based Adaptative Segmenter algorithm.
 nIdentificators = 4;
 
 % Number of Detectors
-%  * 1    - Weighted Moving Average Filter
-%  * 2    - Kalman Filter
+%  * 0    - Weighted Moving Average Filter
+%  * 1    - Kalman Filter
 nDetectors = 2;
 
 % Total Cars Counter
@@ -58,19 +58,26 @@ curVideo = 1;
 carMinSizeValues(1) = 10;
 carMaxSizeValues(1) = 50;
 % Exp
-morphValues(curVideo, 1, 1) = 5;
-carsCountedTrue(curVideo, 1, 1) = 10;
-carsCountedFalse(curVideo, 1, 1) = 0;
-carsNotCountedTrue(curVideo, 1, 1) = 0;
-morphValues(curVideo, 1, 2) = 5;
-carsCountedTrue(curVideo, 1, 2) = 9;
-carsCountedFalse(curVideo, 1, 2) = 0;
-carsNotCountedTrue(curVideo, 1, 2) = 1;
-morphValues(curVideo, 2, 1) = 5;
-carsCountedTrue(curVideo, 2, 1) = 10;
-carsCountedFalse(curVideo, 2, 1) = 0;
-carsNotCountedTrue(curVideo, 2, 1) = 0;
-
+morphValues(curVideo, 1, 1)         = 5;    % morph
+carsCountedTrue(curVideo, 1, 1)     = 10;   % CountTrue
+carsCountedFalse(curVideo, 1, 1)    = 0;    % CountFalse
+carsNotCountedTrue(curVideo, 1, 1)  = 0;    % NotCountTrue
+morphValues(curVideo, 1, 2)         = 5;    % morph
+carsCountedTrue(curVideo, 1, 2)     = 9;
+carsCountedFalse(curVideo, 1, 2)    = 0;
+carsNotCountedTrue(curVideo, 1, 2)  = 1;
+morphValues(curVideo, 2, 1)         = 1;    % morph
+carsCountedTrue(curVideo, 2, 1)     = 9;
+carsCountedFalse(curVideo, 2, 1)    = 0;
+carsNotCountedTrue(curVideo, 2, 1)  = 1;
+morphValues(curVideo, 2, 2)         = 1;    % morph
+carsCountedTrue(curVideo, 2, 2)     = 9;
+carsCountedFalse(curVideo, 2, 2)    = 0;
+carsNotCountedTrue(curVideo, 2, 2)  = 1;
+morphValues(curVideo, 3, 1)         = 1;    % morph
+carsCountedTrue(curVideo, 3, 1)     = 9;
+carsCountedFalse(curVideo, 3, 1)    = 0;
+carsNotCountedTrue(curVideo, 3, 1)  = 1;
 
 %%
 % Video 2
