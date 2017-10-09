@@ -29,6 +29,9 @@ morphValues = zeros(numberOfVideos, nIdentificators, nDetectors);
 carMinSizeValues = zeros(numberOfVideos, nIdentificators, nDetectors);
 carMaxSizeValues = zeros(numberOfVideos, nIdentificators, nDetectors);
 
+% ProcessTime
+processTimeValues = zeros(numberOfVideos, nIdentificators, nDetectors);
+
 % Hard Coded Number of Cars
 carsCounted(1) = 10;
 carsCounted(2) = 101;
@@ -57,27 +60,42 @@ kfNumber = 2;
 curVideo = 1;
 carMinSizeValues(1) = 10;
 carMaxSizeValues(1) = 50;
-% Exp
-morphValues(curVideo, 1, 1)         = 5;    % morph
-carsCountedTrue(curVideo, 1, 1)     = 10;   % CountTrue
-carsCountedFalse(curVideo, 1, 1)    = 0;    % CountFalse
-carsNotCountedTrue(curVideo, 1, 1)  = 0;    % NotCountTrue
+% Exp MOG-Avg
+morphValues(curVideo, 1, 1)         = 5;        % morph
+carsCountedTrue(curVideo, 1, 1)     = 10;       % CountTrue
+carsCountedFalse(curVideo, 1, 1)    = 0;        % CountFalse
+carsNotCountedTrue(curVideo, 1, 1)  = 0;        % NotCountTrue
+processTimeValues(curVideo, 1, 1)   = 25.51;    % ProcessTime
+% Exp MOG-Kalman
 morphValues(curVideo, 1, 2)         = 5;    % morph
-carsCountedTrue(curVideo, 1, 2)     = 9;
+carsCountedTrue(curVideo, 1, 2)     = 9;    
 carsCountedFalse(curVideo, 1, 2)    = 0;
 carsNotCountedTrue(curVideo, 1, 2)  = 1;
+processTimeValues(curVideo, 1, 1)   = 26.98;    % ProcessTime
+% Exp Multilayer-Avg
 morphValues(curVideo, 2, 1)         = 1;    % morph
 carsCountedTrue(curVideo, 2, 1)     = 9;
 carsCountedFalse(curVideo, 2, 1)    = 0;
 carsNotCountedTrue(curVideo, 2, 1)  = 1;
+processTimeValues(curVideo, 1, 1)   = 28.32;    % ProcessTime
+% Exp Multilayer-Kalman
 morphValues(curVideo, 2, 2)         = 1;    % morph
 carsCountedTrue(curVideo, 2, 2)     = 9;
 carsCountedFalse(curVideo, 2, 2)    = 0;
 carsNotCountedTrue(curVideo, 2, 2)  = 1;
+processTimeValues(curVideo, 1, 1)   = 29.89;    % ProcessTime
+% Exp PBAS-Avg
 morphValues(curVideo, 3, 1)         = 1;    % morph
-carsCountedTrue(curVideo, 3, 1)     = 9;
-carsCountedFalse(curVideo, 3, 1)    = 0;
-carsNotCountedTrue(curVideo, 3, 1)  = 1;
+carsCountedTrue(curVideo, 3, 1)     = 6;
+carsCountedFalse(curVideo, 3, 1)    = 1;
+carsNotCountedTrue(curVideo, 3, 1)  = 5;
+processTimeValues(curVideo, 1, 1)   = 49.16;    % ProcessTime
+% Exp PBAS-Kalman
+morphValues(curVideo, 3, 2)         = 1;    % morph
+carsCountedTrue(curVideo, 3, 2)     = 7;
+carsCountedFalse(curVideo, 3, 2)    = 0;
+carsNotCountedTrue(curVideo, 3, 2)  = 3;
+processTimeValues(curVideo, 1, 1)   = 50.78;    % ProcessTime
 
 %%
 % Video 2
