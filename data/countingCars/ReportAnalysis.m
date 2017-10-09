@@ -7,7 +7,7 @@ numberOfVideos = 14;
 % * 4    - BGS Pixel Based Adaptative Segmenter algorithm.
 nIdentificators = 4;
 
-% Number of Detectors
+% Number of Detectors - 2
 %  * 0    - Weighted Moving Average Filter
 %  * 1    - Kalman Filter
 nDetectors = 2;
