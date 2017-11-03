@@ -42,8 +42,8 @@
 // Video Configuration
 #define USE_VIDEO 1
 
-#define DEFAULT_VIDEO_NUMBER 0
-#define DEFAULT_DATASET_NUMBER 5
+#define DEFAULT_VIDEO_NUMBER 1
+#define DEFAULT_DATASET_NUMBER 1
 #define LOOP_VIDEO false
 #define VIDEO_SPEED 300 // ms
 #define VIDEO_PROC_TIMER true
@@ -59,7 +59,9 @@
 * 3    - BGS Multilayer algorithm.
 * 4    - BGS Pixel Based Adaptative Segmenter algorithm.
 */
-#define DETECTOR_USED 1
+#define DETECTOR_USED 3
+#define TRACKER_USED 1
+
 
 /*!
  * Size of the structuring element when using morphological filter. (Pixels)
@@ -72,13 +74,12 @@
  * 1    - Kalman Filter
  * 2    - CamShift Filter
  */
-#define TRACKER_USED 1
 
 // Cars Dimension Limits
-#define CAR_MIN_SIZE_P100 10
+#define CAR_MIN_SIZE_P100 1
 #define CAR_MAX_SIZE_P100 50
 
-#define CAR_UNSEEN_LIMIT 10
+#define CAR_UNSEEN_LIMIT 5
 
 ////////////////////////////////////////////////
 int main(int argc, char **argv)

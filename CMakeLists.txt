@@ -14,7 +14,6 @@
 cmake_minimum_required(VERSION 2.8)
 project(TrafficSurveillanceSystem)
 
-
 # Instruct CMake to run moc automatically when needed
 set(CMAKE_AUTOMOC ON)
 
@@ -22,7 +21,9 @@ set(CMAKE_AUTOMOC ON)
 find_package(OpenCV REQUIRED)
 set_target_properties(${OpenCV_LIBS} PROPERTIES MAP_IMPORTED_CONFIG_RELWITHDEBINFO RELEASE)
 include_directories(SYSTEM "${OpenCV_INCLUDE_DIRS}")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic -Wall -Wextra -Wcast-align -Wcast-qual -std=c++0x")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic -Wall -Wextra -Wcast-align -Wcast-qual -std=c++0x -pg")
+set(CMAKE_EXE_LINKER_FLAGS="-pg")
+set(CMAKE_SHARED_LINKER_FLAGS="-pg")
 set(CMAKE_CXX_STANDARD 11)
 
 # Add BGS Library

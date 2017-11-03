@@ -52,6 +52,10 @@ int runSetup(cv::VideoCapture &video, cv::Mat &initialFrame, ImageLine &imageLin
     // Capture 1st frame
     cv::Mat firstFrame;
     video >> firstFrame;
+    if (firstFrame.rows > 800) {
+        cv::resize(firstFrame, firstFrame, cv::Size(600, 600), 0, 0, cv::INTER_LANCZOS4);
+    }
+
     if (firstFrame.empty()) {
         return 1;
     }
@@ -88,6 +92,10 @@ void runVideo(cv::VideoCapture &video, cv::Mat &frame, ImageLine &imageLine, std
     int counter = 0;
     for (;;) {
         video >> frame;
+        if (frame.rows > 800) {
+            cv::resize(frame, frame, cv::Size(600, 600), 0, 0, cv::INTER_LANCZOS4);
+        }
+
 
         // Loop the video
         if (frame.empty()) {
@@ -129,7 +137,7 @@ void runVideo(cv::VideoCapture &video, cv::Mat &frame, ImageLine &imageLine, std
         }
 
         // Draw number of cars
-        cv::putText(frame, std::to_string(counter), cv::Point(0,frame.rows - 20), cv::FONT_HERSHEY_PLAIN, 0.5,
+        cv::putText(frame, std::to_string(counter), cv::Point(0,frame.rows - 10 * frame.rows / 140), cv::FONT_HERSHEY_PLAIN, 0.5 * frame.rows / 140,
                     cv::Scalar(127, 255, 255));
 
         imageLine.draw(frame);

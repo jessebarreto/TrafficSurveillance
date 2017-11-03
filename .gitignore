@@ -73,3 +73,7 @@ CMakeLists.txt.user
 *.exe
 
 CMakeLists.txt.user
+
+# Data
+data/*
+test_code/*

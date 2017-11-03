@@ -28,3 +28,11 @@ To compile:
 
 To run:
 	$ ./TrafficSurveillance
+
+To run executing a specific video
+	$ ./TrafficSurveillance <name_of_the_video>
+
+To change the algorithms being used in this version it is necessary to change the source code and recompile
+
+* To change the detecion method: Change the value of the define DETECTOR_USED at line 62 of the file main.cpp
+* To change the tracking method: Change the value of the define TRACKER_USED at line 63 of the file main.cpp
